@@ -1,0 +1,56 @@
+[gd_scene load_steps=5 format=3 uid="uid://ca7sw06pwc3ik"]
+
+[ext_resource type="Script" uid="uid://bvb7sq6o7bw6n" path="res://scripts/ChariotController.gd" id="1_chariot"]
+[ext_resource type="Script" uid="uid://cntnv2mg2ok37" path="res://scripts/RacingCamera.gd" id="2_camera"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1"]
+size = Vector3(2, 1, 4)
+
+[sub_resource type="BoxMesh" id="BoxMesh_1"]
+size = Vector3(2, 1, 4)
+
+[node name="SimpleTest" type="Node3D"]
+
+[node name="TestChariot" type="CharacterBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+script = ExtResource("1_chariot")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestChariot"]
+shape = SubResource("BoxShape3D_1")
+
+[node name="MeshPivot" type="Node3D" parent="TestChariot"]
+
+[node name="ChariotMesh" type="MeshInstance3D" parent="TestChariot/MeshPivot"]
+mesh = SubResource("BoxMesh_1")
+
+[node name="GroundCheck" type="RayCast3D" parent="TestChariot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="CreatureAttachPoint" type="Node3D" parent="TestChariot"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.5)
+
+[node name="LeftCreature" type="MeshInstance3D" parent="TestChariot/CreatureAttachPoint"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 1, -1, 0, -1)
+mesh = SubResource("BoxMesh_1")
+
+[node name="RightCreature" type="MeshInstance3D" parent="TestChariot/CreatureAttachPoint"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 1, 1, 0, -1)
+mesh = SubResource("BoxMesh_1")
+
+[node name="Ground" type="StaticBody3D" parent="."]
+
+[node name="GroundMesh" type="MeshInstance3D" parent="Ground"]
+transform = Transform3D(50, 0, 0, 0, 1, 0, 0, 0, 50, 0, 0, 0)
+mesh = SubResource("BoxMesh_1")
+
+[node name="GroundCollision" type="CollisionShape3D" parent="Ground"]
+transform = Transform3D(50, 0, 0, 0, 1, 0, 0, 0, 50, 0, 0, 0)
+shape = SubResource("BoxShape3D_1")
+
+[node name="RacingCamera" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 10, 10)
+script = ExtResource("2_camera")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 10, 0)
+shadow_enabled = true

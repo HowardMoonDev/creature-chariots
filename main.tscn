@@ -1,0 +1,282 @@
+[gd_scene load_steps=8 format=3 uid="uid://bhqehkasflsb5"]
+
+[ext_resource type="PackedScene" uid="uid://bvxqm8y7n8qkr" path="res://scenes/chariots/BasicChariot.tscn" id="1_chariot"]
+[ext_resource type="PackedScene" uid="uid://cqxm8y7n8qkr" path="res://scenes/ui/RacingHUD.tscn" id="2_hud"]
+[ext_resource type="Script" uid="uid://w1ynbeynbccn" path="res://scripts/MainScene.gd" id="3_main_script"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
+size = Vector3(200, 1, 200)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground_light"]
+albedo_color = Color(0.4, 1, 0.5, 1)
+roughness = 0.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_tile"]
+size = Vector3(25, 1, 25)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground_dark"]
+albedo_color = Color(0.1, 0.5, 0.2, 1)
+roughness = 0.8
+
+[node name="Main" type="Node3D"]
+script = ExtResource("3_main_script")
+
+[node name="Ground" type="StaticBody3D" parent="."]
+
+[node name="GroundCollision" type="CollisionShape3D" parent="Ground"]
+shape = SubResource("BoxShape3D_ground")
+
+[node name="GroundTiles" type="Node3D" parent="Ground"]
+
+[node name="Tile_0_0" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75, 0, -75)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_1_0" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, -75)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_2_0" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, -75)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_3_0" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -75)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_4_0" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, -75)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_5_0" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, -75)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_6_0" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 75, 0, -75)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_0_1" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75, 0, -50)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_1_1" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, -50)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_2_1" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, -50)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_3_1" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -50)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_4_1" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, -50)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_5_1" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, -50)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_6_1" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 75, 0, -50)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_0_2" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75, 0, -25)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_1_2" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, -25)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_2_2" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, -25)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_3_2" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -25)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_4_2" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, -25)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_5_2" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, -25)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_6_2" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 75, 0, -25)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_0_3" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75, 0, 0)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_1_3" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, 0)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_2_3" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, 0)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_3_3" type="MeshInstance3D" parent="Ground/GroundTiles"]
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_4_3" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 0)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_5_3" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, 0)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_6_3" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 75, 0, 0)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_0_4" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75, 0, 25)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_1_4" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, 25)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_2_4" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, 25)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_3_4" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 25)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_4_4" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 25)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_5_4" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, 25)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_6_4" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 75, 0, 25)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_0_5" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75, 0, 50)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_1_5" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, 50)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_2_5" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, 50)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_3_5" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 50)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_4_5" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 50)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_5_5" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, 50)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_6_5" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 75, 0, 50)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_0_6" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -75, 0, 75)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_1_6" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -50, 0, 75)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_2_6" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 0, 75)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_3_6" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 75)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_4_6" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 0, 75)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_5_6" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 0, 75)
+material_override = SubResource("StandardMaterial3D_ground_dark")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="Tile_6_6" type="MeshInstance3D" parent="Ground/GroundTiles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 75, 0, 75)
+material_override = SubResource("StandardMaterial3D_ground_light")
+mesh = SubResource("BoxMesh_tile")
+
+[node name="BasicChariot" parent="." instance=ExtResource("1_chariot")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 10, 0)
+shadow_enabled = true
+
+[node name="RacingHUD" parent="." instance=ExtResource("2_hud")]

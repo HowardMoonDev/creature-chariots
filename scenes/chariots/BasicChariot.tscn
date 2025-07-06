@@ -1,0 +1,114 @@
+[gd_scene load_steps=9 format=3 uid="uid://bvxqm8y7n8qkr"]
+
+[ext_resource type="Script" uid="uid://bvb7sq6o7bw6n" path="res://scripts/ChariotController.gd" id="1_0x8qm"]
+[ext_resource type="Script" uid="uid://cntnv2mg2ok37" path="res://scripts/RacingCamera.gd" id="2_camera"]
+[ext_resource type="PackedScene" uid="uid://qfspjoqjyepp" path="res://assets/models/Royal_Sled_0706212635_texture.fbx" id="3_model"]
+[ext_resource type="PackedScene" uid="uid://be137plr0gprv" path="res://assets/models/Aqua_Dragonling_0706214339_texture.fbx" id="4_creature"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_chariot"]
+friction = 0.8
+bounce = 0.1
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_chariot"]
+size = Vector3(1.5, 1.2251, 3)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_creature"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_creature"]
+size = Vector3(1, 2.15039, 2)
+
+[node name="BasicChariot" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.244963, 0)
+script = ExtResource("1_0x8qm")
+turn_force_differential = 60.0
+steering_responsiveness = 1.0
+
+[node name="ChariotBody" type="RigidBody3D" parent="."]
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+mass = 8.0
+physics_material_override = SubResource("PhysicsMaterial_chariot")
+linear_damp = 2.0
+angular_damp = 5.0
+
+[node name="ChariotCollision" type="CollisionShape3D" parent="ChariotBody"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.387451, 0)
+shape = SubResource("BoxShape3D_chariot")
+
+[node name="ChariotMesh" type="Node3D" parent="ChariotBody"]
+
+[node name="ChariotModel" parent="ChariotBody/ChariotMesh" instance=ExtResource("3_model")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0.5, 0)
+
+[node name="GroundCheck" type="RayCast3D" parent="ChariotBody"]
+target_position = Vector3(0, -2, 0)
+
+[node name="CameraTarget" type="Node3D" parent="."]
+
+[node name="RacingCamera" type="Camera3D" parent="CameraTarget"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 8, 12)
+current = true
+script = ExtResource("2_camera")
+
+[node name="LeftCreature" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, -4)
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+mass = 3.0
+physics_material_override = SubResource("PhysicsMaterial_creature")
+linear_damp = 1.0
+angular_damp = 3.0
+
+[node name="LeftCreatureCollision" type="CollisionShape3D" parent="LeftCreature"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 1, 0, 0.405029, 0)
+shape = SubResource("BoxShape3D_creature")
+
+[node name="LeftCreatureModel" parent="LeftCreature" instance=ExtResource("4_creature")]
+transform = Transform3D(-0.8, 0, 0, 0, 0.8, 0, 0, 0, -0.8, 0, 0.5, 0)
+
+[node name="RightCreature" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, -4)
+axis_lock_angular_x = true
+axis_lock_angular_z = true
+mass = 3.0
+physics_material_override = SubResource("PhysicsMaterial_creature")
+linear_damp = 1.0
+angular_damp = 3.0
+
+[node name="RightCreatureCollision" type="CollisionShape3D" parent="RightCreature"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 1, 0, 0.307373, 0)
+shape = SubResource("BoxShape3D_creature")
+
+[node name="RightCreatureModel" parent="RightCreature" instance=ExtResource("4_creature")]
+transform = Transform3D(-0.8, 0, 0, 0, 0.8, 0, 0, 0, -0.8, 0, 0.5, 0)
+
+[node name="LeftTether" type="PinJoint3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.75, 0.5, -1.5)
+node_a = NodePath("../LeftCreature")
+node_b = NodePath("../ChariotBody")
+
+[node name="RightTether" type="PinJoint3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.75, 0.5, -1.5)
+node_a = NodePath("../RightCreature")
+node_b = NodePath("../ChariotBody")
+
+[node name="CreatureYoke" type="Generic6DOFJoint3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -4)
+node_a = NodePath("../LeftCreature")
+node_b = NodePath("../RightCreature")
+linear_limit_x/upper_distance = 0.3
+linear_limit_x/lower_distance = -0.3
+linear_limit_y/upper_distance = 0.2
+linear_limit_y/lower_distance = -0.2
+linear_limit_z/upper_distance = 0.5
+linear_limit_z/lower_distance = -0.5
+linear_spring_x/enabled = true
+linear_spring_x/stiffness = 200.0
+linear_spring_x/damping = 20.0
+linear_spring_y/enabled = true
+linear_spring_y/stiffness = 200.0
+linear_spring_y/damping = 20.0
+linear_spring_z/enabled = true
+linear_spring_z/stiffness = 200.0
+linear_spring_z/damping = 20.0
+angular_limit_y/enabled = false
