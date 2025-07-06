@@ -21,6 +21,10 @@ class_name ChariotController
 @export var creature_force_smoothing: float = 5.0
 @export var steering_responsiveness: float = 2.0
 
+# Drift compensation
+@export var drift_compensation_strength: float = 50.0
+@export var force_balance_smoothing: float = 10.0
+
 # Current state variables
 var current_speed: float = 0.0
 var boost_energy: float = 100.0
@@ -40,6 +44,10 @@ var left_creature_force: float = 0.0
 var right_creature_force: float = 0.0
 var target_left_force: float = 0.0
 var target_right_force: float = 0.0
+
+# Drift compensation tracking
+var accumulated_drift: float = 0.0
+var drift_compensation: float = 0.0
 
 # References
 @onready var chariot_body: RigidBody3D = $ChariotBody
@@ -86,6 +94,7 @@ func _physics_process(delta):
 	smooth_steering_input(delta)
 	update_boost_system(delta)
 	calculate_target_forces()
+	apply_drift_compensation(delta)
 	smooth_force_application(delta)
 	apply_creature_forces()
 	update_camera_target(delta)
@@ -147,9 +156,9 @@ func calculate_target_forces():
 	if is_airborne:
 		steering_differential *= air_control_strength
 	
-	# Set target forces for each creature
-	target_left_force = base_force - steering_differential
-	target_right_force = base_force + steering_differential
+	# Set target forces for each creature with drift compensation
+	target_left_force = base_force - steering_differential + drift_compensation
+	target_right_force = base_force + steering_differential - drift_compensation
 	
 	# Clamp forces to reasonable limits
 	target_left_force = clamp(target_left_force, -max_force * 0.5, max_force)
@@ -178,19 +187,54 @@ func apply_creature_forces():
 	if right_creature_force != 0:
 		right_creature.apply_central_force(right_forward * right_creature_force)
 
-func apply_creature_steering():
-	if not left_creature or not right_creature:
+func apply_drift_compensation(delta):
+	if not chariot_body or not left_creature or not right_creature:
 		return
 	
-	# Only apply steering when there's actual input (increased dead zone to prevent drift)
-	if abs(steering_input) > 0.02:  # Very small dead zone for precision
-		# Calculate steering angle based on input (reversed direction)
-		var steering_angle = -steering_input * 0.35  # Slightly reduced for smoother response
-		var turn_torque = steering_angle * 10.0  # Further reduced torque for gentler turning
+	# Calculate drift by comparing chariot velocity direction with creature orientations
+	var chariot_velocity = chariot_body.linear_velocity
+	if chariot_velocity.length() > 2.0:  # Only compensate when moving
+		var velocity_direction = chariot_velocity.normalized()
+		var left_forward = -left_creature.global_transform.basis.z
+		var right_forward = -right_creature.global_transform.basis.z
+		var average_creature_forward = (left_forward + right_forward).normalized()
 		
-		# Apply same rotational impulse to both creatures
-		left_creature.apply_torque_impulse(Vector3(0, turn_torque, 0))
-		right_creature.apply_torque_impulse(Vector3(0, turn_torque, 0))
+		# Calculate drift as cross product (sideways movement)
+		var drift_vector = velocity_direction.cross(average_creature_forward)
+		accumulated_drift += drift_vector.y * delta
+		
+		# Calculate compensation force
+		var target_compensation = -accumulated_drift * drift_compensation_strength
+		drift_compensation = move_toward(drift_compensation, target_compensation, force_balance_smoothing * delta)
+		
+		# Decay accumulated drift over time
+		accumulated_drift *= 0.95
+
+func apply_creature_steering():
+	if not left_creature or not right_creature or not chariot_body:
+		return
+	
+	# New chariot-based steering system
+	if abs(steering_input) > 0.01:  # Small dead zone
+		# Apply steering torque to the chariot body instead of creatures individually
+		var steering_torque = steering_input * turn_force_differential * 0.5
+		chariot_body.apply_torque_impulse(Vector3(0, steering_torque, 0))
+		
+		# Synchronize creature orientations to match chariot direction
+		var chariot_forward = -chariot_body.global_transform.basis.z
+		var target_rotation = Basis.looking_at(chariot_forward, Vector3.UP)
+		
+		# Apply gentle corrective torques to align creatures with chariot
+		var left_current = left_creature.global_transform.basis
+		var right_current = right_creature.global_transform.basis
+		
+		var left_correction = left_current.get_rotation_quaternion().angle_to(target_rotation.get_rotation_quaternion())
+		var right_correction = right_current.get_rotation_quaternion().angle_to(target_rotation.get_rotation_quaternion())
+		
+		if left_correction > 0.1:
+			left_creature.apply_torque_impulse(Vector3(0, steering_input * 5.0, 0))
+		if right_correction > 0.1:
+			right_creature.apply_torque_impulse(Vector3(0, steering_input * 5.0, 0))
 
 func update_speed_tracking():
 	# Calculate current speed based on chariot velocity

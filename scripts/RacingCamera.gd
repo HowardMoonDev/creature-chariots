@@ -1,85 +1,91 @@
 extends Camera3D
 class_name RacingCamera
 
-# Camera follow settings (relative to parent chariot)
-@export var follow_distance: float = 10.0
-@export var follow_height: float = 5.0
+# Camera positioning settings
+@export var follow_distance: float = 12.0
+@export var follow_height: float = 6.0
+@export var side_offset: float = 0.0
 
-# Camera smoothing
-@export var position_smoothing: float = 2.0
-@export var rotation_smoothing: float = 1.5
+# Camera responsiveness
+@export var position_smoothing: float = 8.0
+@export var rotation_smoothing: float = 6.0
+
+# Predictive tracking
+@export var velocity_prediction_strength: float = 2.0
+@export var steering_prediction_strength: float = 3.0
+@export var max_prediction_distance: float = 8.0
 
 # Camera shake
 @export var shake_intensity: float = 0.0
 @export var shake_decay: float = 5.0
 
-# Look ahead settings
-@export var speed_look_ahead_factor: float = 0.1
-@export var max_look_ahead: float = 15.0
-
 # Internal variables
 var shake_timer: float = 0.0
 var base_position: Vector3
-var base_rotation: Vector3
 var chariot: ChariotController
+var last_valid_direction: Vector3 = Vector3.FORWARD
 
 func _ready():
-	# Make this camera current
 	current = true
 	
-	# Get reference to chariot controller (now grandparent since we're child of CameraTarget)
+	# Get reference to chariot controller
 	chariot = get_parent().get_parent() as ChariotController
 	if not chariot:
 		print("Warning: RacingCamera cannot find ChariotController!")
 	else:
 		print("RacingCamera initialized with chariot: ", chariot.name)
-	
-	# Set initial position relative to camera target
-	position = Vector3(0, follow_height, follow_distance)
-	look_at(Vector3.ZERO, Vector3.UP)
 
 func _process(delta):
-	if not chariot:
+	if not chariot or not chariot.chariot_body:
 		return
 	
-	update_camera_position(delta)
-	update_camera_rotation(delta)
+	update_predictive_camera(delta)
 	apply_camera_shake(delta)
 
-func update_camera_position(delta):
-	if not chariot:
-		return
+func update_predictive_camera(delta):
+	var chariot_body = chariot.chariot_body
+	var chariot_position = chariot_body.global_position
+	var chariot_velocity = chariot_body.linear_velocity
 	
-	# Get chariot's velocity for look-ahead
-	var chariot_velocity = Vector3.ZERO
-	if chariot.has_method("get_current_speed"):
-		var speed = chariot.get_current_speed()
-		chariot_velocity = -chariot.transform.basis.z * speed
+	# Calculate velocity-based direction prediction
+	var velocity_direction = Vector3.ZERO
+	if chariot_velocity.length() > 1.0:  # Only use velocity if moving significantly
+		velocity_direction = chariot_velocity.normalized()
+		last_valid_direction = velocity_direction
+	else:
+		# Use last known direction when stationary
+		velocity_direction = last_valid_direction
 	
-	# Calculate look-ahead based on velocity
-	var velocity_look_ahead = chariot_velocity * speed_look_ahead_factor
-	velocity_look_ahead = velocity_look_ahead.limit_length(max_look_ahead)
+	# Add steering prediction
+	var steering_input = chariot.steering_input if chariot.has_method("get_steering_input") else 0.0
+	var steering_prediction = Vector3(steering_input * steering_prediction_strength, 0, 0)
 	
-	# Calculate desired camera position (relative to chariot)
-	var desired_position = Vector3(0, follow_height, follow_distance)
-	desired_position += velocity_look_ahead * 0.1  # Reduced look-ahead for relative positioning
+	# Combine predictions
+	var total_prediction = (velocity_direction * velocity_prediction_strength + steering_prediction)
+	total_prediction = total_prediction.limit_length(max_prediction_distance)
+	
+	# Calculate target look-at point
+	var look_target = chariot_position + total_prediction
+	
+	# Calculate camera position behind and above the chariot
+	var camera_offset = Vector3(side_offset, follow_height, follow_distance)
+	
+	# Rotate offset based on predicted direction
+	if velocity_direction.length() > 0.1:
+		var rotation_basis = Basis.looking_at(-velocity_direction, Vector3.UP)
+		camera_offset = rotation_basis * camera_offset
+	
+	var target_position = chariot_position + camera_offset
 	
 	# Smooth camera movement
-	base_position = position.lerp(desired_position, position_smoothing * delta)
-	position = base_position
-
-func update_camera_rotation(delta):
-	if not chariot:
-		return
+	global_position = global_position.lerp(target_position, position_smoothing * delta)
 	
-	# Look at a point in front of the chariot (in local space)
-	var look_target = Vector3(0, 1, -5)  # Look slightly ahead and up
+	# Smooth camera rotation to look at predicted target
+	var current_transform = global_transform
+	var target_transform = current_transform.looking_at(look_target, Vector3.UP)
+	global_transform = current_transform.interpolate_with(target_transform, rotation_smoothing * delta)
 	
-	# Smooth camera rotation
-	var desired_transform = transform.looking_at(look_target, Vector3.UP)
-	transform = transform.interpolate_with(desired_transform, rotation_smoothing * delta)
-	
-	base_rotation = rotation
+	base_position = global_position
 
 func apply_camera_shake(delta):
 	if shake_timer > 0:
@@ -93,7 +99,7 @@ func apply_camera_shake(delta):
 		)
 		
 		# Apply shake to position
-		position = base_position + shake_offset
+		global_position = base_position + shake_offset
 		
 		# Decay shake intensity
 		shake_intensity = max(0, shake_intensity - shake_decay * delta)
