@@ -60,7 +60,7 @@ linear_damp = 1.0
 angular_damp = 3.0
 
 [node name="LeftCreatureCollision" type="CollisionShape3D" parent="LeftCreature"]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 1, 0, 0.405029, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 1, 0, 0.356201, 0)
 shape = SubResource("BoxShape3D_creature")
 
 [node name="LeftCreatureModel" parent="LeftCreature" instance=ExtResource("4_creature")]
@@ -76,7 +76,7 @@ linear_damp = 1.0
 angular_damp = 3.0
 
 [node name="RightCreatureCollision" type="CollisionShape3D" parent="RightCreature"]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 1, 0, 0.307373, 0)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 1, 0, 0.356201, 0)
 shape = SubResource("BoxShape3D_creature")
 
 [node name="RightCreatureModel" parent="RightCreature" instance=ExtResource("4_creature")]
@@ -96,13 +96,8 @@ node_b = NodePath("../ChariotBody")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -4)
 node_a = NodePath("../LeftCreature")
 node_b = NodePath("../RightCreature")
-linear_limit_x/enabled = true
-linear_limit_x/upper_distance = 0.0
-linear_limit_x/lower_distance = 0.0
-linear_limit_y/enabled = true
 linear_limit_y/upper_distance = 0.3
 linear_limit_y/lower_distance = -0.3
-linear_limit_z/enabled = true
 linear_limit_z/upper_distance = 0.8
 linear_limit_z/lower_distance = -0.8
 linear_spring_x/enabled = true
@@ -114,10 +109,8 @@ linear_spring_y/damping = 30.0
 linear_spring_z/enabled = true
 linear_spring_z/stiffness = 300.0
 linear_spring_z/damping = 30.0
-angular_limit_x/enabled = true
 angular_limit_x/upper_angle = 0.174533
 angular_limit_x/lower_angle = -0.174533
 angular_limit_y/enabled = false
-angular_limit_z/enabled = true
 angular_limit_z/upper_angle = 0.174533
 angular_limit_z/lower_angle = -0.174533

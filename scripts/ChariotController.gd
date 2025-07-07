@@ -3,8 +3,8 @@ class_name ChariotController
 
 # Racing mechanics variables
 @export var max_force: float = 200.0
-@export var acceleration_force: float = 150.0
-@export var turn_force_differential: float = 80.0
+@export var acceleration_force: float = 240.0
+@export var turn_force_differential: float = 140.0
 @export var air_control_strength: float = 0.3
 
 # Boost mechanics
@@ -19,7 +19,7 @@ class_name ChariotController
 
 # Physics tuning
 @export var creature_force_smoothing: float = 5.0
-@export var steering_responsiveness: float = 2.0
+@export var steering_responsiveness: float = 1.5
 
 # Drift compensation
 @export var drift_compensation_strength: float = 50.0
@@ -36,7 +36,7 @@ var is_airborne: bool = false
 var throttle_input: float = 0.0
 var steering_input: float = 0.0
 var raw_steering_input: float = 0.0
-var steering_smoothing: float = 8.0
+var steering_smoothing: float = 12.0
 var boost_input: bool = false
 
 # Force application variables
@@ -79,6 +79,7 @@ func setup_physics_properties():
 	if chariot_body:
 		chariot_body.mass = 5.0
 		chariot_body.gravity_scale = 1.0
+		chariot_body.angular_damp = 5.0
 		
 	# Configure creature physics
 	if left_creature:
@@ -95,6 +96,7 @@ func _physics_process(delta):
 	update_boost_system(delta)
 	calculate_target_forces()
 	apply_drift_compensation(delta)
+	apply_straightening_force(delta)
 	smooth_force_application(delta)
 	apply_creature_forces()
 	update_camera_target(delta)
@@ -208,33 +210,21 @@ func apply_drift_compensation(delta):
 		drift_compensation = move_toward(drift_compensation, target_compensation, force_balance_smoothing * delta)
 		
 		# Decay accumulated drift over time
-		accumulated_drift *= 0.95
+		accumulated_drift *= 0.85
 
 func apply_creature_steering():
-	if not left_creature or not right_creature or not chariot_body:
+	if not left_creature or not right_creature:
 		return
 	
-	# New chariot-based steering system
-	if abs(steering_input) > 0.01:  # Small dead zone
-		# Apply steering torque to the chariot body instead of creatures individually
-		var steering_torque = steering_input * turn_force_differential * 0.5
-		chariot_body.apply_torque_impulse(Vector3(0, steering_torque, 0))
+	# Only apply steering when there's actual input (increased dead zone to prevent drift)
+	if abs(steering_input) > 0.02:  # Very small dead zone for precision
+		# Calculate steering angle based on input (reversed direction)
+		var steering_angle = -steering_input * 0.25  # Moderate response
+		var turn_torque = steering_angle * 6.0  # Reduced torque for less wild turning
 		
-		# Synchronize creature orientations to match chariot direction
-		var chariot_forward = -chariot_body.global_transform.basis.z
-		var target_rotation = Basis.looking_at(chariot_forward, Vector3.UP)
-		
-		# Apply gentle corrective torques to align creatures with chariot
-		var left_current = left_creature.global_transform.basis
-		var right_current = right_creature.global_transform.basis
-		
-		var left_correction = left_current.get_rotation_quaternion().angle_to(target_rotation.get_rotation_quaternion())
-		var right_correction = right_current.get_rotation_quaternion().angle_to(target_rotation.get_rotation_quaternion())
-		
-		if left_correction > 0.1:
-			left_creature.apply_torque_impulse(Vector3(0, steering_input * 5.0, 0))
-		if right_correction > 0.1:
-			right_creature.apply_torque_impulse(Vector3(0, steering_input * 5.0, 0))
+		# Apply same rotational impulse to both creatures
+		left_creature.apply_torque_impulse(Vector3(0, turn_torque, 0))
+		right_creature.apply_torque_impulse(Vector3(0, turn_torque, 0))
 
 func update_speed_tracking():
 	# Calculate current speed based on chariot velocity
@@ -261,6 +251,12 @@ func update_camera_target(delta):
 func check_ground_status():
 	if ground_check:
 		is_airborne = not ground_check.is_colliding()
+
+func apply_straightening_force(delta):
+	if abs(raw_steering_input) < 0.1 and chariot_body.linear_velocity.length() > 1.0:
+		var current_angular_velocity = chariot_body.angular_velocity
+		var damping_factor = 10.0 # Increased damping for stronger straightening
+		chariot_body.angular_velocity = current_angular_velocity.lerp(Vector3.ZERO, damping_factor * delta)
 
 func take_damage(damage_amount: float):
 	durability -= damage_amount
