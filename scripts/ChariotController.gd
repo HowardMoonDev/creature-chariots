@@ -154,6 +154,10 @@ func calculate_target_forces():
 	# Calculate steering differential
 	var steering_differential = steering_input * turn_force_differential * steering_responsiveness
 	
+	# Reverse steering when reversing
+	if throttle_input < 0:
+		steering_differential *= -1
+	
 	# Apply air control reduction when airborne
 	if is_airborne:
 		steering_differential *= air_control_strength

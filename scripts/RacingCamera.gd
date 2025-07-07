@@ -53,12 +53,8 @@ func get_ideal_position() -> Vector3:
 	if velocity.length_squared() > 0.1:
 		velocity_dir = velocity.normalized()
 
-	# Check if we are moving backwards
-	var dot = velocity_dir.dot(chariot_forward)
-	if dot < -0.5: # Moving backwards
-		return chariot_position + (chariot_forward * follow_distance) + (Vector3.UP * follow_height)
-	else: # Moving forwards or stationary
-		return chariot_position - (velocity_dir * follow_distance) + (Vector3.UP * follow_height)
+	# Always stay behind the chariot
+	return chariot_position - (chariot_forward * follow_distance) + (Vector3.UP * follow_height)
 
 func get_look_at_target() -> Vector3:
 	return chariot.chariot_body.global_position + Vector3.UP * 1.5

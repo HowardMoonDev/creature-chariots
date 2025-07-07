@@ -9,13 +9,14 @@
 friction = 0.8
 bounce = 0.1
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_chariot"]
-radius = 1.5
+[sub_resource type="BoxShape3D" id="BoxShape3D_chariot"]
+size = Vector3(2, 2.20422, 2.87299)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_creature"]
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_creature"]
-radius = 1.0
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_creature"]
+radius = 0.6
+height = 1.33501
 
 [node name="BasicChariot" type="Node3D"]
 script = ExtResource("1_0x8qm")
@@ -26,6 +27,7 @@ boost_multiplier = 2.0
 steering_responsiveness = 1.0
 
 [node name="ChariotBody" type="RigidBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 collision_mask = 2
 axis_lock_angular_x = true
 axis_lock_angular_z = true
@@ -35,8 +37,8 @@ linear_damp = 2.0
 angular_damp = 5.0
 
 [node name="ChariotCollision" type="CollisionShape3D" parent="ChariotBody"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-shape = SubResource("SphereShape3D_chariot")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.102112, 0.0223694)
+shape = SubResource("BoxShape3D_chariot")
 
 [node name="ChariotMesh" type="Node3D" parent="ChariotBody"]
 
@@ -54,7 +56,7 @@ current = true
 script = ExtResource("2_camera")
 
 [node name="LeftCreature" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, -0.42627, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0.308778, -4)
 axis_lock_angular_x = true
 axis_lock_angular_z = true
 mass = 3.0
@@ -64,13 +66,13 @@ angular_damp = 3.0
 
 [node name="LeftCreatureCollision" type="CollisionShape3D" parent="LeftCreature"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-shape = SubResource("SphereShape3D_creature")
+shape = SubResource("CapsuleShape3D_creature")
 
 [node name="LeftCreatureModel" parent="LeftCreature" instance=ExtResource("4_creature")]
 transform = Transform3D(-0.8, 0, 0, 0, 0.8, 0, 0, 0, -0.8, 0, 0.5, 0)
 
 [node name="RightCreature" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, -0.42627, -4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0.308778, -4)
 axis_lock_angular_x = true
 axis_lock_angular_z = true
 mass = 3.0
@@ -80,7 +82,7 @@ angular_damp = 3.0
 
 [node name="RightCreatureCollision" type="CollisionShape3D" parent="RightCreature"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
-shape = SubResource("SphereShape3D_creature")
+shape = SubResource("CapsuleShape3D_creature")
 
 [node name="RightCreatureModel" parent="RightCreature" instance=ExtResource("4_creature")]
 transform = Transform3D(-0.8, 0, 0, 0, 0.8, 0, 0, 0, -0.8, 0, 0.5, 0)
