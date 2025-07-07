@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://ckrppnhf0yo6c"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_kipm1"]
+size = Vector3(10, 0.25, 5)
+
+[node name="TestTrack" type="Node3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.10634)
+mesh = SubResource("BoxMesh_kipm1")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.994053, -0.000950333, -0.108897, 0, 0.999962, -0.00872654, 0.108902, 0.00867463, 0.994015, 0, 0, -3.276)
+mesh = SubResource("BoxMesh_kipm1")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.953942, -0.00261787, -0.299979, 0, 0.999962, -0.00872654, 0.29999, 0.00832461, 0.953906, 1.02597, 0, -7.08936)
+mesh = SubResource("BoxMesh_kipm1")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.829389, 0, -0.558672, 0, 1, 0, 0.558672, 0, 0.829389, 1.98506, 0, -9.40842)
+mesh = SubResource("BoxMesh_kipm1")
+
+[node name="MeshInstance3D5" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.763616, -0.00563447, -0.645646, 0, 0.999962, -0.00872654, 0.645671, 0.00666372, 0.763587, 4.43335, 0, -13.0431)
+mesh = SubResource("BoxMesh_kipm1")
+
+[node name="MeshInstance3D6" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.623593, -0.00682196, -0.781719, 0, 0.999962, -0.00872654, 0.781749, 0.00544181, 0.623569, 7.4147, 0, -15.6327)
+mesh = SubResource("BoxMesh_kipm1")
