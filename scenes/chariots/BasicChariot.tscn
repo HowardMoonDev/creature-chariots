@@ -13,6 +13,7 @@ bounce = 0.1
 size = Vector3(2, 2.20422, 2.87299)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_creature"]
+friction = 2.0
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_creature"]
 radius = 0.6
@@ -23,7 +24,7 @@ script = ExtResource("1_0x8qm")
 max_force = 300.0
 acceleration_force = 320.0
 turn_force_differential = 60.0
-boost_multiplier = 2.0
+boost_multiplier = 5.0
 steering_responsiveness = 1.0
 
 [node name="ChariotBody" type="RigidBody3D" parent="."]
